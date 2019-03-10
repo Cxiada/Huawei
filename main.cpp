@@ -84,6 +84,8 @@ int main() {
         examplefile.getline(buffer,100);
         cout<<buffer<< endl;
     }
+
+    cout<<"Hello"<<endl;
     return 0;
 
 

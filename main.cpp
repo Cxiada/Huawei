@@ -85,7 +85,7 @@ int main() {
         cout<<buffer<< endl;
     }
 
-    cout<<"Hello,github"<<endl;
+    cout<<"goodbye,github"<<endl;
     return 0;
 
 

@@ -1,0 +1,1 @@
+/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/Huawei.dir/main.cpp.o  -o Huawei.exe -Wl,--out-implib,libHuawei.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

@@ -37,8 +37,8 @@ public:
     int from=1;
     int to=2;
     bool isDuplex= false;
-    vector<vector<Car>> Carline;
-    vector<vector<Car>> Carline2;
+    vector<vector<int>> Carline;
+    vector<vector<int>> Carline2;
     Road(int idx, int length, int speed, int channel,int from, int to,bool isDuplex
     ):idx(idx),length(length),speed(speed),channel(channel),from(from),
       to(to), isDuplex(isDuplex){};

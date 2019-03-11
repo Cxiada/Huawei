@@ -68,4 +68,16 @@ vector<Road> Road_input(string path);
 vector<Car> Car_input(string path);
 
 vector<Cross> Cross_input(string path);
+
+class Car_answer{
+public:
+    int idx=1;
+    int planTime=1;
+    vector<int> road_id;
+    Car_answer(int idx,int planTime, vector<int> road_id):idx(idx),planTime(planTime),road_id(road_id){};
+    void Car_answer_init(int idx,int planTime, vector<int> road_id);
+
+};
+
+vector<Car_answer> Car_answer_input(string path);
 #endif //HUAWEI_INPUT_H

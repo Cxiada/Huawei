@@ -136,7 +136,6 @@ vector<Car> Car_input(string path){
     return cars;
 };
 
-
 vector<Cross> Cross_input(string path){
     char buffer[256];
     vector<Cross> crosses;
@@ -179,4 +178,56 @@ vector<Cross> Cross_input(string path){
         crosses.push_back(temp);
     }
     return crosses;
+};
+
+//----------------------------------------------------test_cpp---------------------
+void Car_answer::Car_answer_init(int idx, int planTime, vector<int> road_id) {
+    this->idx=idx;
+    this->planTime=planTime;
+    this->road_id=road_id;
+};
+
+vector<Car_answer> Car_answer_input(string path){
+    char buffer[256];
+    vector<Car_answer> Car_answers;
+    vector<int> road_id;
+    Car_answer temp(1, 1, road_id);
+    ifstream examplefile(path);
+    if (! examplefile.is_open())
+    {
+        cout << "Error opening file"; exit (1);
+    }
+    while (!examplefile.eof())
+    {
+        examplefile.getline(buffer,100);
+        if (buffer[0] == '#') continue;
+        int flag=0;
+        string id={},planTime={},road={};
+        road_id.clear();
+        for (char ch:buffer){
+            if (ch==')') break;
+            if (ch==',') flag+=1;
+            if (isdigit(ch)==0 and ch !='-') continue;
+            switch (flag){
+                default: break;
+                case 0: id+=ch;
+                    break;
+                case 1: planTime+=ch;
+                    break;
+                case 2: road+=ch;
+                    break;
+                case 3: const char* p3 = road.data();
+                        road_id.push_back(atoi(p3));
+                        road={};
+                        road+=ch;
+                        flag=2;
+                    break;
+            }
+        }
+        const char* p1 = id.data();//加const  或者用char * p=(char*)str.data();的形式
+        const char* p2 = planTime.data();//加const  或者用char * p=(char*)str.data();的形式
+        temp.Car_answer_init(atoi(p1),atoi(p2),road_id);
+        Car_answers.push_back(temp);
+    }
+    return Car_answers;
 };

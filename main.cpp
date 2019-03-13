@@ -36,9 +36,9 @@ int main() {
 //    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).up<<(*iter).right<<(*iter).down<<(*iter).left<<endl;
 
-//    string path4="answer.txt";
-//    vector<Car_answer> answers;
-//    answers=Car_answer_input(path4);
+    string path4="answer.txt";
+    vector<Car_answer> answers;
+    answers=Car_answer_input(path4);
 //    for (auto iter=answers.cbegin();iter !=answers.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).planTime<<(*iter).road_id.front()<<endl;
 int time=1;
@@ -49,12 +49,14 @@ int time=1;
 //                 cars[i].state==finish;
 //                 continue;
 //             }
-//        int road_num=isroadempty();
+//        int road_num=isroadempty();//返回车道号，前车ID（注意一车道满，二车道首车的情况）
 //
 //             if(road_num) //返回可进入的车道号；
 //             {
 //                 //车入车道
 //                 cars[i].state==finish;
+                   //更改车的R和V
+
 //
 //             } else{
 //                 cars[i].state==finish;
@@ -62,4 +64,25 @@ int time=1;
 //             }
 //
 //    }
+    ++time;
+    //void init_state();//所有的车初始状态置wait
+    for(int i=0;i<answers.size();++i)
+//    {
+
+//             //能finish的finish 能wait的wait
+               //存路口号
+               //
+//             //
+//    }
+        //路口号按ID升序
+        while (所有车状态都改) {
+            for (cross_id) {
+
+                for(road_cross)
+                {
+                    //函数：若车finish 后面所有车都finish
+                }
+
+            }
+        }
 }

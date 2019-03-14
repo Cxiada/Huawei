@@ -45,7 +45,7 @@ void Cross::Cross_init(int idx, int up, int right, int down, int left) {
 vector<Road> Road_input(string path){
     char buffer[256];
     vector<Road> roads;
-    Road temp(501, 10, 6, 5, 1, 2, 1);
+    Road temp(501,2,1,1);
     ifstream examplefile(path);
     if (! examplefile.is_open())
     {

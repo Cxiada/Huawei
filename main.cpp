@@ -80,7 +80,18 @@ int time=1;
 
                 for(road_cross)
                 {
-                    //函数：若车finish 后面所有车都finish
+                    //保存四条道路第一优先级车的行驶方向
+                    int i=-1;
+                    while(有没有finish 的车)
+                    {
+                        ++i;
+                        i%=4;
+                        //判断是否冲突，是跳出，否走车，改变状态若车finish 后面所有车都finish，判断死循环
+
+
+                    }
+
+
                 }
 
             }

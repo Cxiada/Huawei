@@ -8,12 +8,44 @@
 #include <cstdlib>
 #include <cstdio>
 #include "input.h"
+#include <vector>
 #define normal 1
 #define wait 2
 #define finish 3
 #define terminal 4
 using namespace std;
+vector<int> isroadempty(const vector<Road> &roads,int num_road,int from);
 
+vector<int> isroadempty(const vector<Road> &roads,int num_road, int from) {
+    int num_roads=0;
+    vector<int>res;
+    int num_channel=roads.size();
+    for(int i=0;i<roads.size();++i)
+    {
+        if(roads[i].idx==num_road)
+        {
+            num_roads=i;
+            break;
+        }
+    }
+    if(roads[num_roads].from==from)
+    {
+
+
+        int car_front=0;
+        if(roads[num_roads].Carline[num_channel].size()<roads[num_roads].length)
+        {
+            car_front=roads[num_roads].Carline[num_channel][roads[num_roads].Carline[num_channel].size()-1];
+        } else{
+            car_front=-1;
+        }
+
+        res.push_back(num_channel);
+        res.push_back(car_front);
+
+    }
+    return res;
+}
 
 
 int main() {
@@ -23,7 +55,6 @@ int main() {
 //    for (auto iter=roads.cbegin();iter !=roads.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).length<<(*iter).speed<<(*iter).channel<<(*iter).from
 //        <<(*iter).to<<(*iter).isDuplex<<endl;
-
     string path2="car.txt";
     vector<Car> cars;
     cars=Car_input(path2);
@@ -41,59 +72,65 @@ int main() {
     answers=Car_answer_input(path4);
 //    for (auto iter=answers.cbegin();iter !=answers.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).planTime<<(*iter).road_id.front()<<endl;
-int time=1;
+    int time=1;
+
 //    for(int i=0;i<answers.size();++i)
 //    {
-//             if(answers[i].planTime>time)
-//             {
-//                 cars[i].state==finish;
-//                 continue;
-//             }
+//        if(answers[i].planTime>time)
+//        {
+//            cars[i].state==finish;
+//            continue;
+//        }
 //        int road_num=isroadempty();//返回车道号，前车ID（注意一车道满，二车道首车的情况）
 //
-//             if(road_num) //返回可进入的车道号；
-//             {
-//                 //车入车道
-//                 cars[i].state==finish;
-                   //更改车的R和V
-
+//        if(road_num) //返回可进入的车道号；
+//        {
+//            //车入车道
+//            cars[i].state==finish;
+//            更改车的R和V
 //
-//             } else{
-//                 cars[i].state==finish;
 //
-//             }
+//        } else{
+//            cars[i].state==finish;
+//
+//        }
 //
 //    }
-    ++time;
-    //void init_state();//所有的车初始状态置wait
-    for(int i=0;i<answers.size();++i)
-//    {
-
-//             //能finish的finish 能wait的wait
-               //存路口号
-               //
-//             //
-//    }
-        //路口号按ID升序
-        while (所有车状态都改) {
-            for (cross_id) {
-
-                for(road_cross)
-                {
-                    //保存四条道路第一优先级车的行驶方向
-                    int i=-1;
-                    while(有没有finish 的车)
-                    {
-                        ++i;
-                        i%=4;
-                        //判断是否冲突，是跳出，否走车，改变状态若车finish 后面所有车都finish，判断死循环 
 
 
-                    }
 
 
-                }
-
-            }
-        }
+//
+//    ++time;
+//    //void init_state();//所有的车初始状态置wait
+//    for(int i=0;i<answers.size();++i)
+////    {
+//
+////             //能finish的finish 能wait的wait
+//               //存路口号
+//               //
+////             //
+////    }
+//        //路口号按ID升序
+//        while (所有车状态都改) {
+//            for (cross_id) {
+//
+//                for(road_cross)
+//                {
+//                    //保存四条道路第一优先级车的行驶方向
+//                    int i=-1;
+//                    while(有没有finish 的车)
+//                    {
+//                        ++i;
+//                        i%=4;
+//                        //判断是否冲突，是跳出，否走车，改变状态若车finish 后面所有车都finish，判断死循环
+//
+//
+//                    }
+//
+//
+//                }
+//
+//            }
+//        }
 }

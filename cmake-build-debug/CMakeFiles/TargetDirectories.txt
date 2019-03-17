@@ -1,3 +1,3 @@
-/cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles/Huawei.dir
-/cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles/edit_cache.dir
+F:/c++daima(xin)/clion/Huawei1/cmake-build-debug/CMakeFiles/edit_cache.dir
+F:/c++daima(xin)/clion/Huawei1/cmake-build-debug/CMakeFiles/Huawei.dir
+F:/c++daima(xin)/clion/Huawei1/cmake-build-debug/CMakeFiles/rebuild_cache.dir

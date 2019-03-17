@@ -12,19 +12,20 @@ using namespace std;
 
 class Car{
 public:
-    int idx=1;
-    int from=1;
-    int to=1;
-    int speed_max=5;
-    int planTime=1;
+    int idx;
+    int from;
+    int to;
+    int speed_max;
+    int planTime;
 
-    int speed=5;
-    int r=1;
-    int pre=-1;
-    int road=-1;
-    int state=-1;  //'nromal','wait','finish','end'
-    Car(int idx, int from, int to, int speed_max,
-        int planTime):idx(idx),from(from),to(to),speed_max(speed_max),planTime(planTime){};
+    int speed;
+    int r;
+    int pre;
+    int road;
+    int state;  //'nromal','wait','finish','end'
+    Car(int idx=1, int from=1, int to=1, int speed_max=5,
+        int planTime=1,int speed=5, int r=1,int pre=-1, int road=-1,int state=-1):idx(idx),from(from),to(to),speed_max(speed_max),planTime(planTime)
+    ,speed(speed),r(r),pre(pre),road(road),state(state){};
 
     void Car_init(int idx, int from, int to, int speed_max,
                   int planTime);
@@ -43,7 +44,11 @@ public:
     vector<vector<int>> Carline2;
     Road(int idx,int from, int to,bool isDuplex, int length=10, int speed=5, int channel=3)
     :idx(idx),length(length),speed(speed),channel(channel),from(from),
-      to(to), isDuplex(isDuplex){};
+      to(to), isDuplex(isDuplex){
+        Carline=(vector<vector<int>> (length));
+        Carline2=(vector<vector<int>> (length));
+
+    };
 
     void Road_init(int idx, int length, int speed, int channel,
                    int from, int to,bool isDuplex);
@@ -51,16 +56,16 @@ public:
 
 class Cross{
 public:
-    int idx=1;
-    int up=-1;
-    int right=-1;
-    int down=-1;
-    int left=-1;
+    int idx;
+    int up;
+    int right;
+    int down;
+    int left;
     queue<Car> up_waitCar;
     queue<Car> right_waitCar;
     queue<Car> dowm_waitCar;
     queue<Car> left_waitCar;
-    Cross(int idx, int up, int right, int down,int left):
+    Cross(int idx=1, int up=-1, int right=-1, int down=-1,int left=-1):
             idx(idx), up(up), right(right), down(down), left(left){};
     void Cross_init(int idx, int up, int right, int down,int left);
 };
@@ -76,7 +81,7 @@ public:
     int idx=1;
     int planTime=1;
     vector<int> road_id;
-    Car_answer(int idx,int planTime, vector<int> road_id):idx(idx),planTime(planTime),road_id(road_id){};
+    Car_answer( int  idx,int planTime,vector<int> road_id):idx(idx),planTime(planTime),road_id(road_id){};
     void Car_answer_init(int idx,int planTime, vector<int> road_id);
 
 };

@@ -1,7 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Huawei.dir/main.cpp.o"
+  "CMakeFiles/Huawei.dir/main.cpp.obj"
+  "CMakeFiles/Huawei.dir/input.cpp.obj"
   "Huawei.pdb"
   "Huawei.exe"
+  "Huawei.exe.manifest"
   "libHuawei.dll.a"
 )
 

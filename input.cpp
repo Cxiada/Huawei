@@ -217,10 +217,10 @@ vector<Car_answer> Car_answer_input(string path){
                 case 2: road+=ch;
                     break;
                 case 3: const char* p3 = road.data();
-                        road_id.push_back(atoi(p3));
-                        road={};
-                        road+=ch;
-                        flag=2;
+                    road_id.push_back(atoi(p3));
+                    road={};
+                    road+=ch;
+                    flag=2;
                     break;
             }
         }

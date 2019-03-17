@@ -25,7 +25,7 @@ public:
     int state;  //'nromal','wait','finish','end'
     Car(int idx=1, int from=1, int to=1, int speed_max=5,
         int planTime=1,int speed=5, int r=1,int pre=-1, int road=-1,int state=-1):idx(idx),from(from),to(to),speed_max(speed_max),planTime(planTime)
-    ,speed(speed),r(r),pre(pre),road(road),state(state){};
+            ,speed(speed),r(r),pre(pre),road(road),state(state){};
 
     void Car_init(int idx, int from, int to, int speed_max,
                   int planTime);
@@ -43,8 +43,8 @@ public:
     vector<vector<int>> Carline;
     vector<vector<int>> Carline2;
     Road(int idx,int from, int to,bool isDuplex, int length=10, int speed=5, int channel=3)
-    :idx(idx),length(length),speed(speed),channel(channel),from(from),
-      to(to), isDuplex(isDuplex){
+            :idx(idx),length(length),speed(speed),channel(channel),from(from),
+             to(to), isDuplex(isDuplex){
         Carline=(vector<vector<int>> (length));
         Carline2=(vector<vector<int>> (length));
 

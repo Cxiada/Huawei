@@ -15,29 +15,39 @@
 #define finish 3
 #define terminal 4
 using namespace std;
-vector<int> isroadempty(map<int, Road* > m_road,map<int, Car*> m_car,int num_road,int id_car);
+vector<int> isroadempty(map<int, Road* >& m_road,map<int, Car*>& m_car,int num_road,int id_car);
 
-vector<int> isroadempty(map<int,Road* > m_road,map<int, Car*> m_car,int num_road,int id_car) {
+vector<int> isroadempty(map<int,Road* >& m_road,map<int, Car*>& m_car,int num_road,int id_car) {
     int num_roads=0;
     vector<int>res;
-    Road *roads=(m_road.find(num_road)->second);
+    Road *roads=(m_road.find(num_road)->second);//赋值构造函数不能用？
     int num_channel=0;
     int car_front=-1;
     int from=m_car.find(id_car)->second->from;
-    if((*roads).Carline2.size()==0||(*roads).Carline.size()==0)
+    if((*roads).Carline2[0].size()==0&&(*roads).Carline[0].size()==0)
     {
         car_front=-1;
         res.push_back(num_channel);
         res.push_back(car_front);
         res.push_back(1);
+        if((*roads).from==m_car.find(id_car)->second->from)
+
+            (*roads).Carline[num_channel].push_back(id_car);
+        else
+            (*roads).Carline2[num_channel].push_back(id_car);
         return  res;
     }
-    if((*roads).from==from)
+    if((*roads).from==m_car.find(id_car)->second->from)
     {
-        num_channel=(*roads).Carline.size()-1;
-        if((*roads).Carline.size()<(*roads).length)
+        int cycle=0;
+       while ((*roads).Carline[cycle].size()==(*roads).length)
+       {
+           ++cycle;
+       }
+        num_channel=cycle;
+        if((*roads).Carline[cycle].size()!=0)
         {
-            car_front=(*roads).Carline[(*roads).Carline.size()-1][(*roads).Carline[(*roads).Carline.size()-1].size()-1];
+            car_front=(*roads).Carline[num_channel][(*roads).Carline[num_channel].size()-1];
         } else{
             car_front=-1;
             ++num_channel;
@@ -50,11 +60,18 @@ vector<int> isroadempty(map<int,Road* > m_road,map<int, Car*> m_car,int num_road
         else
             res.push_back(0);
 
+        (*roads).Carline[num_channel].push_back(id_car);
+
     } else{
-        num_channel=(*roads).Carline2.size()-1;
-        if((*roads).Carline2.size()<(*roads).length)
+        int cycle=0;
+        while ((*roads).Carline[cycle].size()==(*roads).length)
         {
-            car_front=(*roads).Carline2[(*roads).Carline2.size()-1][(*roads).Carline2[(*roads).Carline2.size()-1].size()-1];
+            ++cycle;
+        }
+        num_channel=cycle;
+        if((*roads).Carline2[cycle].size()!=0)
+        {
+            car_front=(*roads).Carline2[num_channel][(*roads).Carline2[num_channel].size()-1];
         } else{
             car_front=-1;
             ++num_channel;
@@ -66,6 +83,8 @@ vector<int> isroadempty(map<int,Road* > m_road,map<int, Car*> m_car,int num_road
             res.push_back(1);
         else
             res.push_back(0);
+        (*roads).Carline2[num_channel].push_back(id_car);
+
     }
     return res;
 }
@@ -127,6 +146,8 @@ int main() {
             cars[i].r=road_map[(car_map.find(answers[i].idx)->second->road)]->speed;
             cars[i].speed=road_map[car_map[answers[i].idx]->road]->speed;
             cars[i].pre=road_num[1];
+
+            //修改carline
             //更改车的R和V
 
 

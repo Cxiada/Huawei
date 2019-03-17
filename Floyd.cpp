@@ -64,7 +64,6 @@ vector<vector<int>> zuiduan(int n, vector<Car> &cars,
     return answers;
 }
 
-
 vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_map,
                                map<int, int > &corssid_map){
     vector<vector<int>> L;
@@ -76,33 +75,29 @@ vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_ma
         L.push_back(temp);
     }
     for (int i = 0; i < crosses.size(); ++i) {
-        if (crosses[i].left != -1){
-            Road* roadid=road_map[crosses[i].left];
-            int from=crosses[i].idx;
-            int to=roadid->to;
-            if (roadid->from==from or (roadid->to==from and roadid->isDuplex) )
-                L[corssid_map[from]][corssid_map[to]]=roadid->length;
-        }
-        if (crosses[i].down != -1){
-            Road* roadid=road_map[crosses[i].down];
-            int from=crosses[i].idx;
-            int to=roadid->to;
-            if (roadid->from==from or (roadid->to==from and roadid->isDuplex) )
-                L[corssid_map[from]][corssid_map[to]]=roadid->length;
+        if (crosses[i].up != -1){
+            int from=corssid_map[crosses[i].idx];
+            int to=crosses[i].to_crossidx[0];
+            if (to != -1)
+                L[from][corssid_map[to]]=road_map[crosses[i].up]->length;
         }
         if (crosses[i].right != -1){
-            Road* roadid=road_map[crosses[i].right];
-            int from=crosses[i].idx;
-            int to=roadid->to;
-            if (roadid->from==from or (roadid->to==from and roadid->isDuplex) )
-                L[corssid_map[from]][corssid_map[to]]=roadid->length;
+            int from=corssid_map[crosses[i].idx];
+            int to=crosses[i].to_crossidx[1];
+            if (to != -1)
+                L[from][corssid_map[to]]=road_map[crosses[i].right]->length;
         }
-        if (crosses[i].up != -1){
-            Road* roadid=road_map[crosses[i].up];
-            int from=crosses[i].idx;
-            int to=roadid->to;
-            if (roadid->from==from or (roadid->to==from and roadid->isDuplex) )
-                L[corssid_map[from]][corssid_map[to]]=roadid->length;
+        if (crosses[i].down != -1){
+            int from=corssid_map[crosses[i].idx];
+            int to=crosses[i].to_crossidx[2];
+            if (to != -1)
+                L[from][corssid_map[to]]=road_map[crosses[i].down]->length;
+        }
+        if (crosses[i].left != -1){
+            int from=corssid_map[crosses[i].idx];
+            int to=crosses[i].to_crossidx[3];
+            if (to != -1)
+                L[from][corssid_map[to]]=road_map[crosses[i].left]->length;
         }
 
     }

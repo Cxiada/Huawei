@@ -15,6 +15,8 @@
 #define wait 2
 #define finish 3
 #define terminal 4
+
+#include "Floyd.h"
 using namespace std;
 vector<int> isroadempty(map<int, Road* >& m_road,map<int, Car*>& m_car,int num_road,int id_car);
 
@@ -167,6 +169,7 @@ int roid_jion(Road* road, Road* toroad){
         return road->to;
 }
 
+
 int main() {
     string path1="road.txt";
     vector<Road> roads;
@@ -186,16 +189,16 @@ int main() {
 //    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).up<<(*iter).right<<(*iter).down<<(*iter).left<<endl;
 
-    string path4="answer.txt";
-    vector<Car_answer> answers;
-    answers=Car_answer_input(path4);
+//    string path4="answer.txt";
+//    vector<Car_answer> answers;
+//    answers=Car_answer_input(path4);
 //    for (auto iter=answers.cbegin();iter !=answers.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).planTime<<(*iter).road_id.front()<<endl;
     map<int, Car*> car_map;//car_map从汽车标号到cars下标的映射
-    map<int, Car_answer*> car2answer_map;//car2answer_map从汽车idx到answer的映射
+
     for(int i=0;i<cars.size();++i){
         car_map.insert(pair<int ,Car*>(cars[i].idx,&cars[i]));
-        car2answer_map.insert(pair<int ,Car_answer*>(cars[i].idx,&answers[i]));
+//        car2answer_map.insert(pair<int ,Car_answer*>(cars[i].idx,&answers[i]));
     }
 
 
@@ -207,222 +210,273 @@ int main() {
     for(int i=0;i<crosses.size();++i)
         corss_map.insert(pair<int ,Cross*>(crosses[i].idx,&crosses[i]));
 
-    int Time=1;
+    map<int, int > corssid_map;
+    for(int i=0;i<crosses.size();++i)
+        corssid_map.insert(pair<int ,int>(crosses[i].idx,i));
 
-    for(int i=0;i<answers.size();++i)
-    {
-        if(answers[i].planTime>Time)
-        {
-            cars[i].state==normal;
-            continue;
+    for (int i = 0; i < crosses.size(); ++i) {
+        crosses[i].set_tocrossidx(road_map);
+    }
+
+    int n =crosses.size();
+    vector<vector<int>> my_answers={};
+    vector<vector<int>> L=Floyd_init(crosses, road_map, corssid_map);
+    my_answers=zuiduan(n, cars, corssid_map, L);
+    vector<Car_answer> answers_One;
+
+    for (int i = 0; i <my_answers.size() ; ++i) {
+        auto answer=my_answers[i];
+        vector<int> road_id;
+        Car_answer car_Oneanswer(cars[i].idx,cars[i].planTime, road_id);
+//        cout<<"("<<cars[i].idx<<", "<<cars[i].planTime<<", ";
+        for (int j = 1; j < answer.size(); ++j) {
+            Cross* cross = corss_map[answer[j - 1]];
+            int to=answer[j];
+            if (cross->to_crossidx[0] == to)
+//                    cout << cross->up << ", ";
+                road_id.push_back(cross->up);
+            else if (cross->to_crossidx[1] == to)
+//                    cout << cross->right << ", ";
+                road_id.push_back(cross->right);
+            else if (cross->to_crossidx[2] == to)
+//                    cout << cross->down << ", ";
+                road_id.push_back(cross->down);
+            else if (cross->to_crossidx[3] == to)
+//                    cout << cross->left << ", ";
+                road_id.push_back(cross->left);
+//            else{
+//                if (cross->to_crossidx[0] == to)
+//                    cout << cross->up << ")"<<endl;
+//                else if (cross->to_crossidx[1] == to)
+//                    cout << cross->right << ")"<<endl;
+//                else if (cross->to_crossidx[2] == to)
+//                    cout << cross->down << ")"<<endl;
+//                else if (cross->to_crossidx[3] == to)
+//                    cout << cross->left << ")"<<endl;
+//            }
         }
-        vector<int> road_num=isroadempty(road_map,car_map,answers[i].road_id[0],answers[i].idx);//返回车道号，前车ID（注意一车道满，二车道首车的情况）
-                                                                                                //车道号，前车id ，有没有空位（0/1）
-        if(road_num[2]) //返回可进入的车道号；
-        {
-            //车入车道
-            cars[i].state=finish;
-
-            cars[i].road=answers[i].road_id[0];
-            cars[i].r=road_map[(car_map.find(answers[i].idx)->second->road)]->speed;
-            cars[i].speed=road_map[car_map[answers[i].idx]->road]->speed;
-            cars[i].pre=road_num[1];
-
-            //修改carline
-            //更改车的R和V
-
-
-        } else{
-            cars[i].state=finish;
-
-        }
+        car_Oneanswer.road_id=road_id;
+        answers_One.push_back(car_Oneanswer);
 
     }
-//    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
-//        cout<<(*iter).idx<<", "<<(*iter).road<<","<<(*iter).r<<","<<(*iter).pre<<endl;
-//    system("pause");
-    vector<int> car_terminal;
-    while (car_terminal.size()<answers.size()) {
-        Time++;
-//        cout<<Time<<"   road:"<<cars[0].road<<"    r:"<<cars[0].r<<endl;
-//所有的车初始状态置wait
-        for (int i = 0; i < cars.size(); ++i) {
-            if (cars[i].state == terminal) //到终点的车
-                continue;
-            cars[i].state = wait;
-        }
-        vector<int> cross_wait = {};
-        vector<int> car_wait = {};
-        for (int i = 0; i < answers.size(); ++i)//能finish的finish 不能就wait
-        {
+    vector<int> planTime(answers_One.size(),1);
+    for (int ii = 0; ii < answers_One.size(); ++ii) {
 
-            Car *car = &cars[i];
-            if (car->state == terminal || car->planTime > Time)
-                continue;
+        vector<Car_answer> answers;
+        answers.push_back(answers_One[ii]);
 
-            if (car->pre == -1)//无前车
-                if (car->r + car->speed <= road_map[car->road]->length) {
-                    car->r = car->r + car->speed;
-                    car->state = finish;
-                    continue;
-                } else//出路口的情况
-                if (answers[i].road_id.back() == car->road) {//到达终点
-                    car->state = terminal;
-                    car_terminal.push_back(car->idx);
-                    continue;
-                } else {//出路口,置wait
-                    car->state = wait;
-                    vector<int>::iterator location_index = find(answers[i].road_id.begin(), answers[i].road_id.end(),
-                                                                car->road);  //find函数
-                    int roid=*(location_index);
-                    int roid2=*(location_index+1);
-                    int jionid=roid_jion(road_map[*(location_index)],road_map[*(location_index+1)]);
-                    cross_wait.push_back(jionid);
-                    car_wait.push_back(car->idx);
-                    continue;
-                }
-            else //(car->pre!=-1)有前车
-            if (car->r + car->speed < car_map[car->pre]->r) {//前车和后车距离很远
-                car->r = car->r + car->speed;
-                car->state = finish;
+        Car* car_new=&cars[ii];
+        map<int, Car_answer*> car2answer_map;//car2answer_map从汽车idx到answer的映射
+        car2answer_map.insert(pair<int, Car_answer *>(cars[ii].idx, &answers_One[ii]));
+//        for (int i = 0; i < cars.size(); ++i) {       //car2answer_map从汽车idx到answer的映射
+//            car2answer_map.insert(pair<int, Car_answer *>(cars[i].idx, &answers[i]));
+//        }
+
+
+
+        int Time = 1;
+
+        for (int i = 0; i < answers.size(); ++i) {
+            if (answers[i].planTime > Time) {
+                car_new[i].state == normal;
                 continue;
-            } else //前车和后车距离很近
-            if (car_map[car->pre]->state == wait) {//前车wait状态,置wait
-                car->state = wait;
-                auto location_index = find(answers[i].road_id.begin(), answers[i].road_id.end(), car->road);  //find函数
-                int jionid=roid_jion(road_map[*(location_index)],road_map[*(location_index+1)]);
-                cross_wait.push_back(jionid);
-                car_wait.push_back(car->idx);
-                continue;
-            } else {//前车finish状态
-                car->state = finish;
-                car->r = car_map[car->pre]->r - 1;
-                continue;
+            }
+            vector<int> road_num = isroadempty(road_map, car_map, answers[i].road_id[0],
+                                               answers[i].idx);//返回车道号，前车ID（注意一车道满，二车道首车的情况）
+            //车道号，前车id ，有没有空位（0/1）
+            if (road_num[2]) //返回可进入的车道号；
+            {
+                //车入车道
+                car_new[i].state = finish;
+
+                car_new[i].road = answers[i].road_id[0];
+                car_new[i].r = road_map[(car_map.find(answers[i].idx)->second->road)]->speed;
+                car_new[i].speed = road_map[car_map[answers[i].idx]->road]->speed;
+                car_new[i].pre = road_num[1];
+
+                //修改carline
+                //更改车的R和V
+
+
+            } else {
+                car_new[i].state = finish;
+
             }
 
         }
 //    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
+//        cout<<(*iter).idx<<", "<<(*iter).road<<","<<(*iter).r<<","<<(*iter).pre<<endl;
+//    system("pause");
+        vector<int> car_terminal;
+        while (car_terminal.size() < answers.size()) {
+            Time++;
+//        cout<<Time<<"   road:"<<cars[0].road<<"    r:"<<cars[0].r<<endl;
+//所有的车初始状态置wait
+            for (int i = 0; i < car_new.size(); ++i) {
+                if (car_new[i].state == terminal) //到终点的车
+                    continue;
+                car_new[i].state = wait;
+            }
+            vector<int> cross_wait = {};
+            vector<int> car_wait = {};
+            for (int i = 0; i < answers.size(); ++i)//能finish的finish 不能就wait
+            {
+
+                Car *car = &car_new[i];
+                if (car->state == terminal || car->planTime > Time)
+                    continue;
+
+                if (car->pre == -1)//无前车
+                    if (car->r + car->speed <= road_map[car->road]->length) {
+                        car->r = car->r + car->speed;
+                        car->state = finish;
+                        continue;
+                    } else//出路口的情况
+                    if (answers[i].road_id.back() == car->road) {//到达终点
+                        car->state = terminal;
+                        car_terminal.push_back(car->idx);
+                        continue;
+                    } else {//出路口,置wait
+                        car->state = wait;
+                        vector<int>::iterator location_index = find(answers[i].road_id.begin(),
+                                                                    answers[i].road_id.end(),
+                                                                    car->road);  //find函数
+                        int roid = *(location_index);
+                        int roid2 = *(location_index + 1);
+                        int jionid = roid_jion(road_map[*(location_index)], road_map[*(location_index + 1)]);
+                        cross_wait.push_back(jionid);
+                        car_wait.push_back(car->idx);
+                        continue;
+                    }
+                else //(car->pre!=-1)有前车
+                if (car->r + car->speed < car_map[car->pre]->r) {//前车和后车距离很远
+                    car->r = car->r + car->speed;
+                    car->state = finish;
+                    continue;
+                } else //前车和后车距离很近
+                if (car_map[car->pre]->state == wait) {//前车wait状态,置wait
+                    car->state = wait;
+                    auto location_index = find(answers[i].road_id.begin(), answers[i].road_id.end(),
+                                               car->road);  //find函数
+                    int jionid = roid_jion(road_map[*(location_index)], road_map[*(location_index + 1)]);
+                    cross_wait.push_back(jionid);
+                    car_wait.push_back(car->idx);
+                    continue;
+                } else {//前车finish状态
+                    car->state = finish;
+                    car->r = car_map[car->pre]->r - 1;
+                    continue;
+                }
+
+            }
+//    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
 //        cout<<(*iter).idx<<", "<<(*iter).state<<","<<(*iter).r<<","<<(*iter).pre<<endl;
 
-        sort(cross_wait.begin(), cross_wait.end());//路口号排序
-        cross_wait.erase(unique(cross_wait.begin(), cross_wait.end()), cross_wait.end());//清除重复路口号
+            sort(cross_wait.begin(), cross_wait.end());//路口号排序
+            cross_wait.erase(unique(cross_wait.begin(), cross_wait.end()), cross_wait.end());//清除重复路口号
 
-        while (!car_wait.empty()) {
-            for (int i = 0; i < cross_wait.size(); ++i) {
-                Cross *cross = corss_map[cross_wait[i]];
-                vector<Car *> car_prior;
-                vector<Road *> road_wait;
+            while (!car_wait.empty()) {
+                for (int i = 0; i < cross_wait.size(); ++i) {
+                    Cross *cross = corss_map[cross_wait[i]];
+                    vector<Car *> car_prior;
+                    vector<Road *> road_wait;
 //            cycle_start(cross, &car_prior, &road_wait);
-                if (cross->up != -1) {
-                    Road *road_ = road_map[cross->up];
-                    road_wait.push_back(road_);
-                    car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
-                } else {
-                    road_wait.push_back(nullptr);
-                    car_prior.push_back(nullptr);
-                }
-                if (cross->right != -1) {
-                    Road *road_ = road_map[cross->right];
-                    road_wait.push_back(road_);
-                    car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
-                } else {
-                    road_wait.push_back(nullptr);
-                    car_prior.push_back(nullptr);
-                }
-                if (cross->down != -1) {
-                    Road *road_ = road_map[cross->down];
-                    road_wait.push_back(road_);
-                    car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
-                } else {
-                    road_wait.push_back(nullptr);
-                    car_prior.push_back(nullptr);
-                }
-                if (cross->left != -1) {
-                    Road *road_ = road_map[cross->left];
-                    road_wait.push_back(road_);
-                    car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
-                } else {
-                    road_wait.push_back(nullptr);
-                    car_prior.push_back(nullptr);
-                }
-                int cnt = -1;
-                int flag = 1;
-                while (flag != 0) {
-                    ++cnt;
-                    if (cnt == 4) flag = 0;
-                    cnt %= 4;
-                    if (!car_prior[cnt]) continue; //车走完了
+                    if (cross->up != -1) {
+                        Road *road_ = road_map[cross->up];
+                        road_wait.push_back(road_);
+                        car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
+                    } else {
+                        road_wait.push_back(nullptr);
+                        car_prior.push_back(nullptr);
+                    }
+                    if (cross->right != -1) {
+                        Road *road_ = road_map[cross->right];
+                        road_wait.push_back(road_);
+                        car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
+                    } else {
+                        road_wait.push_back(nullptr);
+                        car_prior.push_back(nullptr);
+                    }
+                    if (cross->down != -1) {
+                        Road *road_ = road_map[cross->down];
+                        road_wait.push_back(road_);
+                        car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
+                    } else {
+                        road_wait.push_back(nullptr);
+                        car_prior.push_back(nullptr);
+                    }
+                    if (cross->left != -1) {
+                        Road *road_ = road_map[cross->left];
+                        road_wait.push_back(road_);
+                        car_prior.push_back(findfirstpriority(road_, cross->idx, car_map));
+                    } else {
+                        road_wait.push_back(nullptr);
+                        car_prior.push_back(nullptr);
+                    }
+                    int cnt = -1;
+                    int flag = 1;
+                    while (flag != 0) {
+                        ++cnt;
+                        if (cnt == 4) flag = 0;
+                        cnt %= 4;
+                        if (!car_prior[cnt]) continue; //车走完了
 //                if (冲突)
 //                    continue;
 //                else{
-                    auto location_index = find(car2answer_map[car_prior[cnt]->idx]->road_id.begin(), //find函数
-                                               car2answer_map[car_prior[cnt]->idx]->road_id.end(), road_wait[cnt]->idx);
-                    int roadid = *(location_index + 1);
-                    int id=road_wait[cnt]->idx;
+                        auto location_index = find(car2answer_map[car_prior[cnt]->idx]->road_id.begin(), //find函数
+                                                   car2answer_map[car_prior[cnt]->idx]->road_id.end(),
+                                                   road_wait[cnt]->idx);
+                        int roadid = *(location_index + 1);
+                        int id = road_wait[cnt]->idx;
 /*车入车道;*/    bool confict = car_move(car_prior[cnt], road_map[roadid], cross->idx, road_map, car_map);
 /*车的状态改变;*/
 /*改变后面的车的状态;*/
 /*car_wait变化/++flag;*/
-                    if (confict) {
-                        auto index = find(car_wait.begin(), car_wait.end(), car_prior[cnt]->idx);
-                        car_wait.erase(index);
-                        flag++;
-                        Car *temp = (findfirstpriority(road_map[car_prior[cnt]->road], cross->idx, car_map));
-                        car_prior[cnt]->road = roadid;
-                        car_prior[cnt] = temp;
-                    }
+                        if (confict) {
+                            auto index = find(car_wait.begin(), car_wait.end(), car_prior[cnt]->idx);
+                            car_wait.erase(index);
+                            flag++;
+                            Car *temp = (findfirstpriority(road_map[car_prior[cnt]->road], cross->idx, car_map));
+                            car_prior[cnt]->road = roadid;
+                            car_prior[cnt] = temp;
+                        }
 //            }
 //
-                }
-                if (car_prior[0] == nullptr and car_prior[1] == nullptr and car_prior[2] == nullptr and
-                    car_prior[3] == nullptr) {
-                    auto index = find(cross_wait.begin(), cross_wait.end(), cross->idx);
-                    cross_wait.erase(index);
-                }
+                    }
+                    if (car_prior[0] == nullptr and car_prior[1] == nullptr and car_prior[2] == nullptr and
+                        car_prior[3] == nullptr) {
+                        auto index = find(cross_wait.begin(), cross_wait.end(), cross->idx);
+                        cross_wait.erase(index);
+                    }
 
 //            if (!road_map[cross->left]->Carline.empty())
 //                car_left=road_map[cross->left]->Carline;
 
+                }
+
+
             }
 
-
         }
-
+//
+//
+        cout << Time << endl;
+        planTime.push_back(Time);
     }
-//
-//    ++time;
-//    //void init_state();//所有的车初始状态置wait
-//    for(int i=0;i<answers.size();++i)
-////    {
-//
-////             //能finish的finish 能wait的wait
-//               //存路口号
-//               //
-////             //
-////    }
-//        //路口号按ID升序
-//        while (所有车状态都改) {
-//            for (cross_id) {
-//
-//                for(road_cross)
-//                {
-//                    //保存四条道路第一优先级车的行驶方向
-//                    int i=-1;
-//                    while(有没有finish 的车)
-//                    {
-//                        ++i;
-//                        i%=4;
-//                        //判断是否冲突，是跳出，否走车，改变状态若车finish 后面所有车都finish，判断死循环
-//
-//
-//                    }
-//
-//
-//                }
-//
-//            }
-//        }
-    cout<<Time<<endl;
+
+    ofstream file("answer.txt");
+    int Timetemp=0;
+    for (int i = 0; i < answers_One.size(); ++i) {
+        auto answer=answers_One[i];
+        file<<"("<<answer.idx<<", "<<answer.planTime+Timetemp<<", ";
+        for (int j = 1; j < answer.road_id.size()-1; ++j) {
+            file<<answer.road_id[j]<<", ";
+        }
+        file<<answer.road_id.back()<<")";
+        Timetemp+=planTime[i];
+    }
+    file.close();
+
     return 0;
 }
 

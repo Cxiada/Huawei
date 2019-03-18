@@ -42,6 +42,46 @@ void Cross::Cross_init(int idx, int up, int right, int down, int left) {
     this->left=left;
 };
 
+void Cross::set_tocrossidx(map<int, Road* > &road_map){
+    int Drec=0;
+    if(this->up !=-1){
+        Road* road=road_map[this->up];
+        if (this->idx==road->from)
+            this->to_crossidx[Drec]=road->to;
+        else if(road->isDuplex)
+                this->to_crossidx[Drec]=road->from;
+        else this->to_crossidx[Drec]=-1;
+    } else this->to_crossidx[Drec]=-1;
+    ++Drec;
+    if(this->right !=-1){
+        Road* road=road_map[this->right];
+        if (this->idx==road->from)
+            this->to_crossidx[Drec]=road->to;
+        else if(road->isDuplex)
+            this->to_crossidx[Drec]=road->from;
+        else this->to_crossidx[Drec]=-1;
+    } else this->to_crossidx[Drec]=-1;
+    ++Drec;
+    if(this->down !=-1){
+        Road* road=road_map[this->down];
+        if (this->idx==road->from)
+            this->to_crossidx[Drec]=road->to;
+        else if(road->isDuplex)
+            this->to_crossidx[Drec]=road->from;
+        else this->to_crossidx[Drec]=-1;
+    } else this->to_crossidx[Drec]=-1;
+    ++Drec;
+    if(this->left !=-1){
+        Road* road=road_map[this->left];
+        if (this->idx==road->from)
+            this->to_crossidx[Drec]=road->to;
+        else if(road->isDuplex)
+            this->to_crossidx[Drec]=road->from;
+        else this->to_crossidx[Drec]=-1;
+    } else this->to_crossidx[Drec]=-1;
+}
+
+
 vector<Road> Road_input(string path){
     char buffer[256];
     vector<Road> roads;

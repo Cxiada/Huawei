@@ -15,6 +15,8 @@
 #define wait 2
 #define finish 3
 #define terminal 4
+
+#include "Floyd.h"
 using namespace std;
 vector<int> isroadempty(map<int, Road* >& m_road,map<int, Car*>& m_car,int num_road,int id_car);
 
@@ -167,73 +169,70 @@ int roid_jion(Road* road, Road* toroad){
         return road->to;
 }
 
+
 int main() {
-    string path1="road.txt";
+    string path1 = "../config/road.txt";
     vector<Road> roads;
-    roads=Road_input(path1);
+    roads = Road_input(path1);
 //    for (auto iter=roads.cbegin();iter !=roads.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).length<<(*iter).speed<<(*iter).channel<<(*iter).from
 //        <<(*iter).to<<(*iter).isDuplex<<endl;
-    string path2="car.txt";
+    string path2 = "../config/car.txt";
     vector<Car> cars;
-    cars=Car_input(path2);
-//    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
-//        cout<<(*iter).idx<<(*iter).from<<(*iter).to<<(*iter).speed_max<<(*iter).planTime<<endl;
+    cars = Car_input(path2);
 
-    string path3="cross.txt";
+
+    string path3 = "../config/cross.txt";
     vector<Cross> crosses;
-    crosses=Cross_input(path3);
-//    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
-//        cout<<(*iter).idx<<(*iter).up<<(*iter).right<<(*iter).down<<(*iter).left<<endl;
+    crosses = Cross_input(path3);
 
-    string path4="answer.txt";
+
+    string path4 = "../config/answer.txt";
     vector<Car_answer> answers;
-    answers=Car_answer_input(path4);
-//    for (auto iter=answers.cbegin();iter !=answers.cend();iter++)
-//        cout<<(*iter).idx<<(*iter).planTime<<(*iter).road_id.front()<<endl;
-    map<int, Car*> car_map;//car_map从汽车标号到cars下标的映射
-    map<int, Car_answer*> car2answer_map;//car2answer_map从汽车idx到answer的映射
-    for(int i=0;i<cars.size();++i){
-        car_map.insert(pair<int ,Car*>(cars[i].idx,&cars[i]));
-        car2answer_map.insert(pair<int ,Car_answer*>(cars[i].idx,&answers[i]));
+    answers = Car_answer_input(path4);
+
+    map<int, Car *> car_map;//car_map从汽车标号到cars下标的映射
+    map<int, Car_answer *> car2answer_map;//car2answer_map从汽车idx到answer的映射
+    for (int i = 0; i < cars.size(); ++i) {
+        car_map.insert(pair<int, Car *>(cars[i].idx, &cars[i]));
+        car2answer_map.insert(pair<int, Car_answer *>(cars[i].idx, &answers[i]));
     }
 
 
-    map<int, Road* > road_map;//road_map从road标号到roads下标的映射
-    for(int i=0;i<roads.size();++i)
-        road_map.insert(pair<int ,Road*>(roads[i].idx,&roads[i]));
+    map<int, Road *> road_map;//road_map从road标号到roads下标的映射
+    for (int i = 0; i < roads.size(); ++i)
+        road_map.insert(pair<int, Road *>(roads[i].idx, &roads[i]));
 
-    map<int, Cross* > corss_map;//corss_map从corss标号到corsses下标的映射
-    for(int i=0;i<crosses.size();++i)
-        corss_map.insert(pair<int ,Cross*>(crosses[i].idx,&crosses[i]));
+    map<int, Cross *> corss_map;//corss_map从corss标号到corsses下标的映射
+    for (int i = 0; i < crosses.size(); ++i)
+        corss_map.insert(pair<int, Cross *>(crosses[i].idx, &crosses[i]));
 
-    int Time=1;
+    int Time = 1;
 
-    for(int i=0;i<answers.size();++i)
-    {
-        if(answers[i].planTime>Time)
-        {
-            cars[i].state==normal;
+    for (int i = 0; i < answers.size(); ++i) {
+        if (answers[i].planTime > Time) {
+            cars[i].state == normal;
             continue;
         }
-        vector<int> road_num=isroadempty(road_map,car_map,answers[i].road_id[0],answers[i].idx);//返回车道号，前车ID（注意一车道满，二车道首车的情况）
-                                                                                                //车道号，前车id ，有没有空位（0/1）
-        if(road_num[2]) //返回可进入的车道号；
+        vector<int> road_num = isroadempty(road_map, car_map, answers[i].road_id[0],
+                                           answers[i].idx);//返回车道号，前车ID（注意一车道满，二车道首车的情况）
+        //车道号，前车id ，有没有空位（0/1）
+        if (road_num[2]) //返回可进入的车道号；
         {
             //车入车道
-            cars[i].state=finish;
+            cars[i].state = finish;
 
-            cars[i].road=answers[i].road_id[0];
-            cars[i].r=road_map[(car_map.find(answers[i].idx)->second->road)]->speed;
-            cars[i].speed=road_map[car_map[answers[i].idx]->road]->speed;
-            cars[i].pre=road_num[1];
+            cars[i].road = answers[i].road_id[0];
+            cars[i].r = road_map[(car_map.find(answers[i].idx)->second->road)]->speed;
+            cars[i].speed = road_map[car_map[answers[i].idx]->road]->speed;
+            cars[i].pre = road_num[1];
 
             //修改carline
             //更改车的R和V
 
 
-        } else{
-            cars[i].state=finish;
+        } else {
+            cars[i].state = finish;
 
         }
 
@@ -242,7 +241,7 @@ int main() {
 //        cout<<(*iter).idx<<", "<<(*iter).road<<","<<(*iter).r<<","<<(*iter).pre<<endl;
 //    system("pause");
     vector<int> car_terminal;
-    while (car_terminal.size()<answers.size()) {
+    while (car_terminal.size() < answers.size()) {
         Time++;
 //        cout<<Time<<"   road:"<<cars[0].road<<"    r:"<<cars[0].r<<endl;
 //所有的车初始状态置wait
@@ -274,9 +273,9 @@ int main() {
                     car->state = wait;
                     vector<int>::iterator location_index = find(answers[i].road_id.begin(), answers[i].road_id.end(),
                                                                 car->road);  //find函数
-                    int roid=*(location_index);
-                    int roid2=*(location_index+1);
-                    int jionid=roid_jion(road_map[*(location_index)],road_map[*(location_index+1)]);
+                    int roid = *(location_index);
+                    int roid2 = *(location_index + 1);
+                    int jionid = roid_jion(road_map[*(location_index)], road_map[*(location_index + 1)]);
                     cross_wait.push_back(jionid);
                     car_wait.push_back(car->idx);
                     continue;
@@ -290,7 +289,7 @@ int main() {
             if (car_map[car->pre]->state == wait) {//前车wait状态,置wait
                 car->state = wait;
                 auto location_index = find(answers[i].road_id.begin(), answers[i].road_id.end(), car->road);  //find函数
-                int jionid=roid_jion(road_map[*(location_index)],road_map[*(location_index+1)]);
+                int jionid = roid_jion(road_map[*(location_index)], road_map[*(location_index + 1)]);
                 cross_wait.push_back(jionid);
                 car_wait.push_back(car->idx);
                 continue;
@@ -358,7 +357,7 @@ int main() {
                     auto location_index = find(car2answer_map[car_prior[cnt]->idx]->road_id.begin(), //find函数
                                                car2answer_map[car_prior[cnt]->idx]->road_id.end(), road_wait[cnt]->idx);
                     int roadid = *(location_index + 1);
-                    int id=road_wait[cnt]->idx;
+                    int id = road_wait[cnt]->idx;
 /*车入车道;*/    bool confict = car_move(car_prior[cnt], road_map[roadid], cross->idx, road_map, car_map);
 /*车的状态改变;*/
 /*改变后面的车的状态;*/
@@ -422,7 +421,7 @@ int main() {
 //
 //            }
 //        }
-    cout<<Time<<endl;
+    cout << Time << endl;
     return 0;
 }
 

@@ -8,6 +8,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <map>
 using namespace std;
 
 class Car{
@@ -61,13 +62,11 @@ public:
     int right;
     int down;
     int left;
-    queue<Car> up_waitCar;
-    queue<Car> right_waitCar;
-    queue<Car> dowm_waitCar;
-    queue<Car> left_waitCar;
+    vector<int> to_crossidx={-1,-1,-1,-1};
     Cross(int idx=1, int up=-1, int right=-1, int down=-1,int left=-1):
             idx(idx), up(up), right(right), down(down), left(left){};
     void Cross_init(int idx, int up, int right, int down,int left);
+    void set_tocrossidx(map<int, Road* > &road_map);
 };
 
 vector<Road> Road_input(string path);

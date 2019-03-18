@@ -1,3 +1,4 @@
-ToolSet: w64 6.0@F:\clion\mingw64
+ToolSet: 3.0.0@C:\cygwin64
 Options: 
-CMake: 3.8.2@F:\clion\CLion 2017.2\bin\cmake\bin\cmake.exe
+
+Options:

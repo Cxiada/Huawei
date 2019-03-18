@@ -171,21 +171,21 @@ int roid_jion(Road* road, Road* toroad){
 
 
 int main() {
-    string path1="road.txt";
+    string path1 = "../config/road.txt";
     vector<Road> roads;
-    roads=Road_input(path1);
+    roads = Road_input(path1);
 //    for (auto iter=roads.cbegin();iter !=roads.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).length<<(*iter).speed<<(*iter).channel<<(*iter).from
 //        <<(*iter).to<<(*iter).isDuplex<<endl;
-    string path2="car.txt";
+    string path2 = "../config/car.txt";
     vector<Car> cars;
-    cars=Car_input(path2);
+    cars = Car_input(path2);
 //    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).from<<(*iter).to<<(*iter).speed_max<<(*iter).planTime<<endl;
 
-    string path3="cross.txt";
+    string path3 = "../config/cross.txt";
     vector<Cross> crosses;
-    crosses=Cross_input(path3);
+    crosses = Cross_input(path3);
 //    for (auto iter=cars.cbegin();iter !=cars.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).up<<(*iter).right<<(*iter).down<<(*iter).left<<endl;
 
@@ -194,74 +194,93 @@ int main() {
 //    answers=Car_answer_input(path4);
 //    for (auto iter=answers.cbegin();iter !=answers.cend();iter++)
 //        cout<<(*iter).idx<<(*iter).planTime<<(*iter).road_id.front()<<endl;
-    map<int, Car*> car_map;//car_map从汽车标号到cars下标的映射
+    map<int, Car *> car_map;//car_map从汽车标号到cars下标的映射
 
-    for(int i=0;i<cars.size();++i){
-        car_map.insert(pair<int ,Car*>(cars[i].idx,&cars[i]));
+    for (int i = 0; i < cars.size(); ++i) {
+        car_map.insert(pair<int, Car *>(cars[i].idx, &cars[i]));
 //        car2answer_map.insert(pair<int ,Car_answer*>(cars[i].idx,&answers[i]));
     }
 
 
-    map<int, Road* > road_map;//road_map从road标号到roads下标的映射
-    for(int i=0;i<roads.size();++i)
-        road_map.insert(pair<int ,Road*>(roads[i].idx,&roads[i]));
+    map<int, Road *> road_map;//road_map从road标号到roads下标的映射
+    for (int i = 0; i < roads.size(); ++i)
+        road_map.insert(pair<int, Road *>(roads[i].idx, &roads[i]));
 
-    map<int, Cross* > corss_map;//corss_map从corss标号到corsses下标的映射
-    for(int i=0;i<crosses.size();++i)
-        corss_map.insert(pair<int ,Cross*>(crosses[i].idx,&crosses[i]));
+    map<int, Cross *> corss_map;//corss_map从corss标号到corsses下标的映射
+    for (int i = 0; i < crosses.size(); ++i)
+        corss_map.insert(pair<int, Cross *>(crosses[i].idx, &crosses[i]));
 
-    map<int, int > corssid_map;
-    for(int i=0;i<crosses.size();++i)
-        corssid_map.insert(pair<int ,int>(crosses[i].idx,i));
 
     for (int i = 0; i < crosses.size(); ++i) {
         crosses[i].set_tocrossidx(road_map);
     }
 
-    int n =crosses.size();
-    vector<vector<int>> my_answers={};
-    vector<vector<int>> L=Floyd_init(crosses, road_map, corssid_map);
-    my_answers=zuiduan(n, cars, corssid_map, L);
+    int n = crosses.size();
+    vector<vector<int>> my_answers = {};
+    vector<vector<int>> L = Floyd_init(crosses, road_map);
+    my_answers = zuiduan(n, cars, L);
     vector<Car_answer> answers_One;
 
-    for (int i = 0; i <my_answers.size() ; ++i) {
-        auto answer=my_answers[i];
+
+    for (int i = 0; i < my_answers.size(); ++i) {
+        auto answer = my_answers[i];
         vector<int> road_id;
-        Car_answer car_Oneanswer(cars[i].idx,cars[i].planTime, road_id);
-//        cout<<"("<<cars[i].idx<<", "<<cars[i].planTime<<", ";
+        Car_answer car_Oneanswer(cars[i].idx, cars[i].planTime, road_id);
         for (int j = 1; j < answer.size(); ++j) {
-            Cross* cross = corss_map[answer[j - 1]];
-            int to=answer[j];
+            Cross *cross = corss_map[answer[j - 1]];
+            int to = answer[j];
             if (cross->to_crossidx[0] == to)
-//                    cout << cross->up << ", ";
                 road_id.push_back(cross->up);
             else if (cross->to_crossidx[1] == to)
-//                    cout << cross->right << ", ";
                 road_id.push_back(cross->right);
             else if (cross->to_crossidx[2] == to)
-//                    cout << cross->down << ", ";
                 road_id.push_back(cross->down);
             else if (cross->to_crossidx[3] == to)
-//                    cout << cross->left << ", ";
                 road_id.push_back(cross->left);
         }
-        car_Oneanswer.road_id=road_id;
+        car_Oneanswer.road_id = road_id;
         answers_One.push_back(car_Oneanswer);
 
     }
-
-    ofstream file("answer.txt");
-//    int Timetemp=0;
+    vector<int> planTime;
+    planTime.push_back(0);
+    for (int i = 0; i < answers_One.size(); ++i) {
+        auto answer = answers_One[i];
+        int time = 0;
+        for (int j = 0; j < answer.road_id.size(); ++j) {
+        time += road_map[answer.road_id[j]]->length;
+        }
+        time=time/cars[i].speed;
+    planTime.push_back(time+planTime.back());
+    }
+    for (int k = 0; k < planTime.size(); ++k) {
+        cout<<planTime[k]<<endl;
+    }
+    for (int i = 0; i < answers_One.size(); ++i) {
+        answers_One[i].planTime=planTime[i];
+    }
+    ofstream file("../config/answer.txt");
     for (int i = 0; i < answers_One.size(); ++i) {
         auto answer=answers_One[i];
         file<<"("<<answer.idx<<", "<<answer.planTime<<", ";
-        for (int j = 1; j < answer.road_id.size()-1; ++j) {
+        for (int j = 0; j < answer.road_id.size()-1; ++j) {
             file<<answer.road_id[j]<<", ";
         }
         file<<answer.road_id.back()<<")"<<"\n";
-//        Timetemp+=planTime[i];
     }
     file.close();
+
+
+//    ofstream file("../config/answer.txt");
+//    for (int i = 0; i < my_answers.size(); ++i) {
+//        vector<int> answer=my_answers[i];
+//        file<<"("<<cars[i].idx<<", "<<cars[i].planTime<<", ";
+//        for (int j = 0; j < answer.size()-1; ++j) {
+//            file<<answer[j]<<", ";
+//        }
+//        file<<answer.back()<<")"<<"\n";
+//    }
+//    file.close();
 
     return 0;
 }

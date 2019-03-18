@@ -6,8 +6,7 @@
 using namespace std;
 
 //Floyd算法    参考https://blog.csdn.net/glb007/article/details/82562837
-vector<vector<int>> zuiduan(int n, vector<Car> &cars,
-                            map<int, int > &corssid_map, vector<vector<int>> &L){
+vector<vector<int>> zuiduan(int n, vector<Car> &cars, vector<vector<int>> &L){
     int dis[n][n];        //存储源点到各个顶点的最短路径
     vector<int> path[n][n];
     for (int i = 0; i < n; i++)              //初始化
@@ -53,8 +52,8 @@ vector<vector<int>> zuiduan(int n, vector<Car> &cars,
     }
     vector<vector<int>> answers;
     for (int i = 0; i < cars.size(); ++i) {
-        int from=corssid_map[cars[i].from];
-        int to=corssid_map[cars[i].to];
+        int from=cars[i].from-1;
+        int to=cars[i].to-1;
         vector<int> answer;
         for (int j = 0; j <path[from][to].size() ; ++j) {
             answer.push_back(path[from][to][j]);
@@ -64,8 +63,7 @@ vector<vector<int>> zuiduan(int n, vector<Car> &cars,
     return answers;
 }
 
-vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_map,
-                               map<int, int > &corssid_map){
+vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_map){
     vector<vector<int>> L;
     for (int i = 0; i < crosses.size(); ++i) {
         vector<int> temp={};
@@ -76,28 +74,28 @@ vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_ma
     }
     for (int i = 0; i < crosses.size(); ++i) {
         if (crosses[i].up != -1){
-            int from=corssid_map[crosses[i].idx];
+            int from=crosses[i].idx;
             int to=crosses[i].to_crossidx[0];
             if (to != -1)
-                L[from][corssid_map[to]]=road_map[crosses[i].up]->length;
+                L[from-1][to-1]=road_map[crosses[i].up]->length;
         }
         if (crosses[i].right != -1){
-            int from=corssid_map[crosses[i].idx];
+            int from=crosses[i].idx;
             int to=crosses[i].to_crossidx[1];
             if (to != -1)
-                L[from][corssid_map[to]]=road_map[crosses[i].right]->length;
+                L[from-1][to-1]=road_map[crosses[i].right]->length;
         }
         if (crosses[i].down != -1){
-            int from=corssid_map[crosses[i].idx];
+            int from=crosses[i].idx;
             int to=crosses[i].to_crossidx[2];
             if (to != -1)
-                L[from][corssid_map[to]]=road_map[crosses[i].down]->length;
+                L[from-1][to-1]=road_map[crosses[i].down]->length;
         }
         if (crosses[i].left != -1){
-            int from=corssid_map[crosses[i].idx];
+            int from=crosses[i].idx;
             int to=crosses[i].to_crossidx[3];
             if (to != -1)
-                L[from][corssid_map[to]]=road_map[crosses[i].left]->length;
+                L[from-1][to-1]=road_map[crosses[i].left]->length;
         }
 
     }

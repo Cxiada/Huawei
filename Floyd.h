@@ -23,4 +23,6 @@ vector<vector<int>> zuiduan(int n, vector<Car> &cars, vector<vector<int>> &L);
 
 vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_map);
 
+void creat_map(vector<Car> &cars, vector<Cross> &crosses,
+               map<int, Road *> &road_map, map<int, Cross *> &corss_map);
 #endif //HUAWEI_FLOYD_H

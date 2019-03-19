@@ -266,6 +266,8 @@ vector<Car_answer> Car_answer_input(string path){
         }
         const char* p1 = id.data();//加const  或者用char * p=(char*)str.data();的形式
         const char* p2 = planTime.data();//加const  或者用char * p=(char*)str.data();的形式
+        const char* p3 = road.data();
+        road_id.push_back(atoi(p3));
         temp.Car_answer_init(atoi(p1),atoi(p2),road_id);
         Car_answers.push_back(temp);
     }

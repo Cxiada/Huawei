@@ -101,3 +101,61 @@ vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_ma
     }
     return L;
 }
+
+void creat_map(vector<Car> &cars, vector<Cross> &crosses,
+               map<int, Road *> &road_map, map<int, Cross *> &corss_map){
+    int n = crosses.size();
+    vector<vector<int>> my_answers = {};
+    vector<vector<int>> L = Floyd_init(crosses, road_map);
+    my_answers = zuiduan(n, cars, L);
+    vector<Car_answer> answers_One;
+
+
+    for (int i = 0; i < my_answers.size(); ++i) {
+        auto answer = my_answers[i];
+        vector<int> road_id;
+        Car_answer car_Oneanswer(cars[i].idx, cars[i].planTime, road_id);
+        for (int j = 1; j < answer.size(); ++j) {
+            Cross *cross = corss_map[answer[j - 1]];
+            int to = answer[j];
+            if (cross->to_crossidx[0] == to)
+                road_id.push_back(cross->up);
+            else if (cross->to_crossidx[1] == to)
+                road_id.push_back(cross->right);
+            else if (cross->to_crossidx[2] == to)
+                road_id.push_back(cross->down);
+            else if (cross->to_crossidx[3] == to)
+                road_id.push_back(cross->left);
+        }
+        car_Oneanswer.road_id = road_id;
+        answers_One.push_back(car_Oneanswer);
+
+    }
+    vector<int> planTime;
+    planTime.push_back(0);
+    for (int i = 0; i < answers_One.size(); ++i) {
+        auto answer = answers_One[i];
+        int time = 0;
+        for (int j = 0; j < answer.road_id.size(); ++j) {
+            time += road_map[answer.road_id[j]]->length;
+        }
+        time=time/cars[i].speed;
+        planTime.push_back(time+planTime.back());
+    }
+    for (int k = 0; k < planTime.size(); ++k) {
+//        cout<<planTime[k]<<endl;
+    }
+//    for (int i = 1; i < answers_One.size(); ++i) {
+//        answers_One[i].planTime=planTime[i];
+//    }
+    ofstream file("../config/answer.txt");
+    for (int i = 0; i < answers_One.size(); ++i) {
+        auto answer=answers_One[i];
+        file<<"("<<answer.idx<<", "<<answer.planTime<<", ";
+        for (int j = 0; j < answer.road_id.size()-1; ++j) {
+            file<<answer.road_id[j]<<", ";
+        }
+        file<<answer.road_id.back()<<")"<<"\n";
+    }
+    file.close();
+}

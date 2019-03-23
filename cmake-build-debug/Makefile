@@ -123,6 +123,33 @@ Huawei/fast:
 	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/build
 .PHONY : Huawei/fast
 
+Estimate.o: Estimate.cpp.o
+
+.PHONY : Estimate.o
+
+# target to build an object file
+Estimate.cpp.o:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/Estimate.cpp.o
+.PHONY : Estimate.cpp.o
+
+Estimate.i: Estimate.cpp.i
+
+.PHONY : Estimate.i
+
+# target to preprocess a source file
+Estimate.cpp.i:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/Estimate.cpp.i
+.PHONY : Estimate.cpp.i
+
+Estimate.s: Estimate.cpp.s
+
+.PHONY : Estimate.s
+
+# target to generate assembly for a file
+Estimate.cpp.s:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/Estimate.cpp.s
+.PHONY : Estimate.cpp.s
+
 Floyd.o: Floyd.cpp.o
 
 .PHONY : Floyd.o
@@ -213,6 +240,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... Huawei"
 	@echo "... edit_cache"
+	@echo "... Estimate.o"
+	@echo "... Estimate.i"
+	@echo "... Estimate.s"
 	@echo "... Floyd.o"
 	@echo "... Floyd.i"
 	@echo "... Floyd.s"

@@ -71,11 +71,11 @@ int main() {
 
     string path4 = "../config/answer.txt";
     string path5 = "../config/answer_raw.txt";//最终输出文件
-    vector<vector<int>> L=creat_map(cars, crosses, road_map, corss_map, path5);
+    vector<vector<int>> L=creat_map(cars, crosses, road_map, corss_map, path4);
     vector<Car_answer> answer_raw;
     answer_raw = Car_answer_input(path4);
     sort(answer_raw.begin(), answer_raw.end(),cmp);//出发时间
-    int pr_strat=4;//一共在地图上跑的车数量
+    int pr_strat=2000;//一共在地图上跑的车数量
     vector<Car_answer> answers(answer_raw.begin(),answer_raw.begin()+pr_strat);
         map<int, Car_answer *> car2answer_raw_map;//car2answer_map从汽车idx到answer_raw的映射
         for (int i = 0; i < answer_raw.size(); ++i) {
@@ -99,10 +99,13 @@ int main() {
 
                     }
                 }
+                vector<vector<int>> L_temp=L_change(crosses, road_map,L);
                 for (int i = 0; i < car_terminal.size(); ++i) {  //answer加入新车
                     if (pr_strat<answer_raw.size()){
                         answer_raw[pr_strat].planTime=Time;
                         answers.push_back(answer_raw[pr_strat]);
+                        UpdateRoute_pre(crosses.size(), car_map[answer_raw[pr_strat].idx],
+                                answers.back(),L_temp,corss_map,car2answer_raw_map);
                         pr_strat++;
                     } else break;
 

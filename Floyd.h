@@ -23,10 +23,17 @@ vector<vector<int>> zuiduan(int n, vector<Car> &cars, vector<vector<int>> &L);
 
 vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_map);
 
+vector<vector<int>> L_change(vector<Cross> &crosses, map<int, Road* > &road_map,
+                             vector<vector<int>> L);
+
 vector<vector<int>> creat_map(vector<Car> &cars, vector<Cross> &crosses,
                map<int, Road *> &road_map, map<int, Cross *> &corss_map,string path);
 
 void UpdateRoute(int n, const int car_wait, map<int, Car_answer *> &car2answer_map,  vector<vector<int>> L,
                  const map<int, Car *> car_map,const map<int, Road *> road_map,map<int, Cross *> &corss_map,
                  map<int, Car_answer *> car2answer_raw_map);
+
+void UpdateRoute_pre(int n, const Car* car, Car_answer &answer,  vector<vector<int>> L,
+                     map<int, Cross *> &corss_map, map<int, Car_answer *> car2answer_raw_map);
+
 #endif //HUAWEI_FLOYD_H

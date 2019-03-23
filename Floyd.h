@@ -17,12 +17,16 @@
 #include "input.h"
 #include <map>
 #include <algorithm>
-
-const int inf = 999999;
+#include "Estimate.h"
+const int inf = 9999999;
 vector<vector<int>> zuiduan(int n, vector<Car> &cars, vector<vector<int>> &L);
 
 vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_map);
 
-void creat_map(vector<Car> &cars, vector<Cross> &crosses,
-               map<int, Road *> &road_map, map<int, Cross *> &corss_map);
+vector<vector<int>> creat_map(vector<Car> &cars, vector<Cross> &crosses,
+               map<int, Road *> &road_map, map<int, Cross *> &corss_map,string path);
+
+void UpdateRoute(int n, const int car_wait, map<int, Car_answer *> &car2answer_map,  vector<vector<int>> L,
+                 const map<int, Car *> car_map,const map<int, Road *> road_map,map<int, Cross *> &corss_map,
+                 map<int, Car_answer *> car2answer_raw_map);
 #endif //HUAWEI_FLOYD_H

@@ -17,4 +17,9 @@ CMakeFiles/Huawei.dir/main.cpp.o: ../Estimate.h
 CMakeFiles/Huawei.dir/main.cpp.o: ../Floyd.h
 CMakeFiles/Huawei.dir/main.cpp.o: ../input.h
 CMakeFiles/Huawei.dir/main.cpp.o: ../main.cpp
+CMakeFiles/Huawei.dir/main.cpp.o: ../output_test.h
+
+CMakeFiles/Huawei.dir/output_test.cpp.o: ../input.h
+CMakeFiles/Huawei.dir/output_test.cpp.o: ../output_test.cpp
+CMakeFiles/Huawei.dir/output_test.cpp.o: ../output_test.h
 

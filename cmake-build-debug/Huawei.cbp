@@ -101,6 +101,12 @@
 		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/main.cpp">
 			<Option target="Huawei"/>
 		</Unit>
+		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/output_test.cpp">
+			<Option target="Huawei"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/output_test.h">
+			<Option target="Huawei"/>
+		</Unit>
 		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

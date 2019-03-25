@@ -231,6 +231,33 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+output_test.o: output_test.cpp.o
+
+.PHONY : output_test.o
+
+# target to build an object file
+output_test.cpp.o:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/output_test.cpp.o
+.PHONY : output_test.cpp.o
+
+output_test.i: output_test.cpp.i
+
+.PHONY : output_test.i
+
+# target to preprocess a source file
+output_test.cpp.i:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/output_test.cpp.i
+.PHONY : output_test.cpp.i
+
+output_test.s: output_test.cpp.s
+
+.PHONY : output_test.s
+
+# target to generate assembly for a file
+output_test.cpp.s:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/output_test.cpp.s
+.PHONY : output_test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -252,6 +279,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... output_test.o"
+	@echo "... output_test.i"
+	@echo "... output_test.s"
 .PHONY : help
 
 

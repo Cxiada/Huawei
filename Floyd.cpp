@@ -19,33 +19,49 @@ vector<vector<int>> zuiduan(int n, vector<Car> &cars, vector<vector<int>> &L){
             path[i][j].push_back(j+1);
         }
     }
-    for (int k = 0; k < n; k++)
+    for (int j = 0; j < n; j++)
     {
-        for (int i = 0; i < n; i++)
+        for (int k = 0; k < n; k++)
         {
-            for (int j = 0; j < n; j++)
+            for (int i = 0; i < n; i++)
+            {
+//                if (k==98 and i==79 and j==79)
+//                    cout<<j<<" "<<endl;
+//
+//                if (dis[98][79] !=inf)
+//                    cout<<" geh"<<endl;
+                //dis[i] = min(dis[i],dis[j] + L[j][i]);
+                if (dis[k][i] > dis[k][j] + L[j][i])               //求源点到节点的最短路径，利用现有的L矩阵
+                {
+                    dis[k][i] = dis[k][j] + L[j][i];
+                    path[k][i].clear();                         //保存并更新路径
+                    path[k][i].insert(path[k][i].end(), path[k][j].begin(),path[k][j].end());
+                    path[k][i].push_back(i+1);
+                }
+
+//                if (dis[i][k] > dis[i][j] + L[j][k])               //求源点到节点的最短路径，利用现有的L矩阵
+//                {
+//                    dis[i][k] = dis[i][j] + L[j][k];
+//                    path[i][k].clear();                         //保存并更新路径
+//                    path[i][k].insert(path[i][k].end(), path[i][j].begin(),path[i][j].end());
+//                    path[i][k].push_back(k+1);
+//                }
+            }
+        }
+    }
+    for (int j = n-1; j >= 0; j--)
+    {
+        for (int k = n-1; k >=0; k--)
+        {
+            for (int i = n-1; i >=0 ; i--)
             {
                 //dis[i] = min(dis[i],dis[j] + L[j][i]);
                 if (dis[k][i] > dis[k][j] + L[j][i])               //求源点到节点的最短路径，利用现有的L矩阵
                 {
                     dis[k][i] = dis[k][j] + L[j][i];
-
                     path[k][i].clear();                         //保存并更新路径
                     path[k][i].insert(path[k][i].end(), path[k][j].begin(),path[k][j].end());
                     path[k][i].push_back(i+1);
-                }
-            }
-            for (int m = 0; m < i; m++)              //更新节点最短路径
-            {
-                for(int j = 0; j < n; j++)
-                {
-                    if (dis[k][m] > dis[k][j] + L[j][m])
-                    {
-                        dis[k][m] = dis[k][j] + L[j][m];
-                        path[k][m].clear();                     //保存并更新路径
-                        path[k][m].insert(path[k][m].end(), path[k][j].begin(), path[k][j].end());
-                        path[k][m].push_back(m + 1);
-                    }
                 }
             }
         }
@@ -72,6 +88,10 @@ vector<vector<int>> Floyd_init(vector<Cross> &crosses, map<int, Road* > &road_ma
         }
         L.push_back(temp);
     }
+    for (int k = 0; k < crosses.size(); ++k) {
+        L[k][k]=0;
+    }
+
     for (int i = 0; i < crosses.size(); ++i) {
         if (crosses[i].up != -1){
             int from=crosses[i].idx;
@@ -110,6 +130,13 @@ vector<vector<int>>  creat_map(vector<Car> &cars, vector<Cross> &crosses,
     my_answers = zuiduan(n, cars, L);
     vector<Car_answer> answers_One;
 
+//    ofstream fileL("../config/L.txt");
+//    for (int k = 0; k < L.size(); ++k) {
+//        for (int i = 0; i < L[k].size(); ++i) {
+//            fileL<<L[k][i]<<", ";
+//        }
+//        fileL<<endl;
+//    }
 
     for (int i = 0; i < my_answers.size(); ++i) {
         auto answer = my_answers[i];
@@ -270,12 +297,12 @@ int weight(map<int, Road* > &road_map, int road_id,int from){ //使用百分比
         for (int i = 0; i < road_map[road_id]->channel; ++i) {
             total+=road_map[road_id]->Carline[i].size();
         }
-        return (total)*100/(road_map[road_id]->channel*road_map[road_id]->length);
+        return (total)*10/(road_map[road_id]->channel*road_map[road_id]->length)+1;
     } else{
         for (int i = 0; i < road_map[road_id]->channel; ++i) {
             total+=road_map[road_id]->Carline2[i].size();
         }
-        return (total)*100/(road_map[road_id]->channel*road_map[road_id]->length);
+        return (total)*10/(road_map[road_id]->channel*road_map[road_id]->length)+1;
     }
 }
 
@@ -313,73 +340,134 @@ vector<vector<int>> L_change(vector<Cross> &crosses, map<int, Road* > &road_map,
     return L;
 }
 
-void UpdateRoute_pre(int n, const Car* car, Car_answer &answer,  vector<vector<int>> L,
-                 map<int, Cross *> &corss_map, map<int, Car_answer *> car2answer_raw_map) {
-    //获得路口号
-    int from=car->from-1;
-    int to=car->to-1;
+
+void UpdateRoute_pre(int n, int p_beg, int P_end,   vector<vector<int>> L,map<int, Cross *> &corss_map,
+                     map<int, Car *> car_map, vector<Car_answer> &answer_raw) {
+    //获得待排序车
+    vector<Car> cars;
+    for (int i = p_beg; i < P_end; ++i) {
+        cars.push_back(*car_map[answer_raw[i].idx]);
+    }
     //重新调用floyd算法计算新的最短路径
-    int dis[n][n];        //存储源点到各个顶点的最短路径
-    vector<int> path[n][n];
-    for (int i = 0; i < n; i++)              //初始化
-    {
+    vector<vector<int>> my_answers = zuiduan(n, cars, L);
 
-        for (int j = 0; j < n; j++)
-        {
-            dis[i][j] = L[i][j];
-            path[i][j].push_back(i+1);
-            path[i][j].push_back(j+1);
+    for (int i = 0; i < my_answers.size(); ++i) {
+
+        auto answer = my_answers[i];
+        vector<int> road_id;
+        Car_answer car_Oneanswer(cars[i].idx, cars[i].planTime, road_id);
+        for (int j = 1; j < answer.size(); ++j) {
+            Cross *cross = corss_map[answer[j - 1]];
+            int to = answer[j];
+            if (cross->to_crossidx[0] == to)
+                road_id.push_back(cross->up);
+            else if (cross->to_crossidx[1] == to)
+                road_id.push_back(cross->right);
+            else if (cross->to_crossidx[2] == to)
+                road_id.push_back(cross->down);
+            else if (cross->to_crossidx[3] == to)
+                road_id.push_back(cross->left);
         }
+        car_Oneanswer.road_id = road_id;
+        answer_raw[i+p_beg]=car_Oneanswer;
+
     }
-    int k=from;
-
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            //dis[i] = min(dis[i],dis[j] + L[j][i]);
-            if (dis[k][i] > dis[k][j] + L[j][i])               //求源点到节点的最短路径，利用现有的L矩阵
-            {
-                dis[k][i] = dis[k][j] + L[j][i];
-
-                path[k][i].clear();                         //保存并更新路径
-                path[k][i].insert(path[k][i].end(), path[k][j].begin(),path[k][j].end());
-                path[k][i].push_back(i+1);
-            }
-        }
-        for (int m = 0; m < i; m++)              //更新节点最短路径
-        {
-            for(int j = 0; j < n; j++)
-            {
-                if (dis[k][m] > dis[k][j] + L[j][m])
-                {
-                    dis[k][m] = dis[k][j] + L[j][m];
-                    path[k][m].clear();                     //保存并更新路径
-                    path[k][m].insert(path[k][m].end(), path[k][j].begin(), path[k][j].end());
-                    path[k][m].push_back(m + 1);
-                }
-            }
-        }
-    }
-
-    //更改当前车的路径
-    vector<int> road_id;
-    for (int j = 1; j < path[from][to].size(); ++j) {
-        Cross *cross = corss_map[path[from][to][j - 1]];
-        int to_road = path[from][to][j];
-        if (cross->to_crossidx[0] == to_road)
-            road_id.push_back(cross->up);
-        else if (cross->to_crossidx[1] == to_road)
-            road_id.push_back(cross->right);
-        else if (cross->to_crossidx[2] == to_road)
-            road_id.push_back(cross->down);
-        else if (cross->to_crossidx[3] == to_road)
-            road_id.push_back(cross->left);
-    }
-    answer.road_id.erase(answer.road_id.begin(),answer.road_id.end());
-    answer.road_id.insert(answer.road_id.end(),road_id.begin(),road_id.end());
-
-//    car2answer_raw_map[car_wait]->road_id.erase(car2answer_raw_map[car_wait]->road_id.begin()+idx_road_id,car2answer_raw_map[car_wait]->road_id.end());
-//    car2answer_raw_map[car_wait]->road_id.insert(car2answer_raw_map[car_wait]->road_id.end(),road_id.begin(),road_id.end());
-
 }
+
+//void UpdateRoute_pre2(int n, const Car* car, Car_answer &answer,  vector<vector<int>> L,
+//                 map<int, Cross *> &corss_map, map<int, Car_answer *> car2answer_raw_map) {
+//    //获得路口号
+//    int from=car->from-1;
+//    int to=car->to-1;
+//    //重新调用floyd算法计算新的最短路径
+//    int dis[n][n];        //存储源点到各个顶点的最短路径
+//    vector<int> path[n][n];
+//    for (int i = 0; i < n; i++)              //初始化
+//    {
+//
+//        for (int j = 0; j < n; j++)
+//        {
+//            dis[i][j] = L[i][j];
+//            path[i][j].push_back(i+1);
+//            path[i][j].push_back(j+1);
+//        }
+//    }
+//    int k=from;
+//
+//    for (int i = 0; i < n; i++)
+//    {
+//        for (int j = 0; j < n; j++)
+//        {
+//            //dis[i] = min(dis[i],dis[j] + L[j][i]);
+//            if (dis[k][i] > dis[k][j] + L[j][i])               //求源点到节点的最短路径，利用现有的L矩阵
+//            {
+//                dis[k][i] = dis[k][j] + L[j][i];
+//
+//                path[k][i].clear();                         //保存并更新路径
+//                path[k][i].insert(path[k][i].end(), path[k][j].begin(),path[k][j].end());
+//                path[k][i].push_back(i+1);
+//            }
+//        }
+//        for (int m = 0; m < i; m++)              //更新节点最短路径
+//        {
+//            for(int j = 0; j < n; j++)
+//            {
+//                if (dis[k][m] > dis[k][j] + L[j][m])
+//                {
+//                    dis[k][m] = dis[k][j] + L[j][m];
+//                    path[k][m].clear();                     //保存并更新路径
+//                    path[k][m].insert(path[k][m].end(), path[k][j].begin(), path[k][j].end());
+//                    path[k][m].push_back(m + 1);
+//                }
+//            }
+//        }
+//    }
+//    for (int i = 0; i < n; i++)
+//    {
+//        for (int j = 0; j < n; j++)
+//        {
+//            //dis[i] = min(dis[i],dis[j] + L[j][i]);
+//            if (dis[k][i] > dis[k][j] + L[j][i])               //求源点到节点的最短路径，利用现有的L矩阵
+//            {
+//                dis[k][i] = dis[k][j] + L[j][i];
+//
+//                path[k][i].clear();                         //保存并更新路径
+//                path[k][i].insert(path[k][i].end(), path[k][j].begin(),path[k][j].end());
+//                path[k][i].push_back(i+1);
+//            }
+//        }
+//        for (int m = 0; m < i; m++)              //更新节点最短路径
+//        {
+//            for(int j = 0; j < n; j++)
+//            {
+//                if (dis[k][m] > dis[k][j] + L[j][m])
+//                {
+//                    dis[k][m] = dis[k][j] + L[j][m];
+//                    path[k][m].clear();                     //保存并更新路径
+//                    path[k][m].insert(path[k][m].end(), path[k][j].begin(), path[k][j].end());
+//                    path[k][m].push_back(m + 1);
+//                }
+//            }
+//        }
+//    }
+//    //更改当前车的路径
+//    vector<int> road_id;
+//    for (int j = 1; j < path[from][to].size(); ++j) {
+//        Cross *cross = corss_map[path[from][to][j - 1]];
+//        int to_road = path[from][to][j];
+//        if (cross->to_crossidx[0] == to_road)
+//            road_id.push_back(cross->up);
+//        else if (cross->to_crossidx[1] == to_road)
+//            road_id.push_back(cross->right);
+//        else if (cross->to_crossidx[2] == to_road)
+//            road_id.push_back(cross->down);
+//        else if (cross->to_crossidx[3] == to_road)
+//            road_id.push_back(cross->left);
+//    }
+//    answer.road_id.erase(answer.road_id.begin(),answer.road_id.end());
+//    answer.road_id.insert(answer.road_id.end(),road_id.begin(),road_id.end());
+//
+//    car2answer_raw_map[car->idx]->road_id.erase(car2answer_raw_map[car->idx]->road_id.begin(),car2answer_raw_map[car->idx]->road_id.end());
+//    car2answer_raw_map[car->idx]->road_id.insert(car2answer_raw_map[car->idx]->road_id.end(),road_id.begin(),road_id.end());
+//
+//}

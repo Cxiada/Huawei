@@ -14,22 +14,23 @@
 #include "input.h"
 #include "Floyd.h"
 #include "Estimate.h"
+#include "output_test.h"
 using namespace std;
 
 
 
-int cmp(Car_answer ac1, Car_answer ac2){
+int cmp_time(Car_answer ac1, Car_answer ac2){
     if(ac1.planTime<ac2.planTime)
         return 1;
     else
         return 0;
 }
-//int cmp(Car_answer ac1, Car_answer ac2){
-//    if(ac1.road_id.size()<ac2.road_id.size())
-//        return 1;
-//    else
-//        return 0;
-//}
+int cmp_length(Car_answer ac1, Car_answer ac2){
+    if(ac1.road_id.size()<ac2.road_id.size())
+        return 1;
+    else
+        return 0;
+}
 
 
 int main() {
@@ -71,10 +72,24 @@ int main() {
 
     string path4 = "../config/answer.txt";
     string path5 = "../config/answer_raw.txt";//最终输出文件
+
     vector<vector<int>> L=creat_map(cars, crosses, road_map, corss_map, path4);
     vector<Car_answer> answer_raw;
     answer_raw = Car_answer_input(path4);
-    sort(answer_raw.begin(), answer_raw.end(),cmp);//出发时间
+    sort(answer_raw.begin(), answer_raw.end(),cmp_length);//出发时间
+    ofstream file2(path5);
+    for (int i = 0; i < answer_raw.size(); ++i) {
+        auto answer=answer_raw[i];
+        file2<<"("<<answer.idx<<", "<<answer.planTime<<", ";
+        for (int j = 0; j < answer.road_id.size()-1; ++j) {
+            file2<<answer.road_id[j]<<", ";
+        }
+        if (i==answer_raw.size()-1)
+            file2<<answer.road_id.back()<<")";
+        else
+            file2<<answer.road_id.back()<<")"<<"\n";
+    }
+    file2.close();
     int pr_strat=2000;//一共在地图上跑的车数量
     vector<Car_answer> answers(answer_raw.begin(),answer_raw.begin()+pr_strat);
         map<int, Car_answer *> car2answer_raw_map;//car2answer_map从汽车idx到answer_raw的映射
@@ -100,12 +115,17 @@ int main() {
                     }
                 }
                 vector<vector<int>> L_temp=L_change(crosses, road_map,L);
+                if (pr_strat+car_terminal.size()<=answer_raw.size())
+                UpdateRoute_pre(crosses.size(),pr_strat, pr_strat+car_terminal.size(), L_temp,
+                        corss_map, car_map, answer_raw);
+                else
+                    UpdateRoute_pre(crosses.size(),pr_strat, answer_raw.size(), L_temp,
+                                    corss_map, car_map, answer_raw);
+
                 for (int i = 0; i < car_terminal.size(); ++i) {  //answer加入新车
                     if (pr_strat<answer_raw.size()){
                         answer_raw[pr_strat].planTime=Time;
                         answers.push_back(answer_raw[pr_strat]);
-                        UpdateRoute_pre(crosses.size(), car_map[answer_raw[pr_strat].idx],
-                                answers.back(),L_temp,corss_map,car2answer_raw_map);
                         pr_strat++;
                     } else break;
 
@@ -124,7 +144,7 @@ int main() {
 //        if (Time%100==0)
             cout<<Time<<"   "<<pr_strat<<endl;
 //            cout<<Time<<"   "<<answers.size()-car_terminal.size()<<endl;
-//        if (pr_strat==7114)
+//        if (Time==133)
 //            cout<<"在这里停顿"<<endl;
 
             vector<int> cross_wait = {};
@@ -138,7 +158,8 @@ int main() {
             vector<int> cross_wait_back = cross_wait;
             vector<int> car_wait_back = car_wait;
             vector<Car_answer> answers_back=answers;
-
+        if (Time>=332)
+            output(car_wait,cross_wait,roads,car_map,car2answer_map);
             while (!car_wait.empty()) {
                 int cars_num = car_wait.size();
                 for (int i = 0; i < cross_wait.size(); ++i) {

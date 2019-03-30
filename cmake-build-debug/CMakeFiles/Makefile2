@@ -71,7 +71,7 @@ CMAKE_BINARY_DIR = /cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-deb
 CMakeFiles/Huawei.dir/all:
 	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/depend
 	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target Huawei"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target Huawei"
 .PHONY : CMakeFiles/Huawei.dir/all
 
 # Include target in all.
@@ -81,7 +81,7 @@ all: CMakeFiles/Huawei.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Huawei.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Huawei.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /cygdrive/c/Users/XDchen/CLionProjects/Huawei/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/Huawei.dir/rule

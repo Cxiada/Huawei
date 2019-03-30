@@ -80,6 +80,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/Estimate.cpp">
+			<Option target="Huawei"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/Estimate.h">
+			<Option target="Huawei"/>
+		</Unit>
 		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/Floyd.cpp">
 			<Option target="Huawei"/>
 		</Unit>
@@ -93,6 +99,12 @@
 			<Option target="Huawei"/>
 		</Unit>
 		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/main.cpp">
+			<Option target="Huawei"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/output_test.cpp">
+			<Option target="Huawei"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/output_test.h">
 			<Option target="Huawei"/>
 		</Unit>
 		<Unit filename="/cygdrive/c/Users/XDchen/CLionProjects/Huawei/CMakeLists.txt">

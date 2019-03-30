@@ -9,6 +9,10 @@
 #include <queue>
 #include <string>
 #include <map>
+#define normal -1
+#define wait 2
+#define finish 3
+#define terminal 4
 using namespace std;
 
 class Car{

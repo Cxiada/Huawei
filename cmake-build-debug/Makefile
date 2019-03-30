@@ -123,6 +123,33 @@ Huawei/fast:
 	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/build
 .PHONY : Huawei/fast
 
+Estimate.o: Estimate.cpp.o
+
+.PHONY : Estimate.o
+
+# target to build an object file
+Estimate.cpp.o:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/Estimate.cpp.o
+.PHONY : Estimate.cpp.o
+
+Estimate.i: Estimate.cpp.i
+
+.PHONY : Estimate.i
+
+# target to preprocess a source file
+Estimate.cpp.i:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/Estimate.cpp.i
+.PHONY : Estimate.cpp.i
+
+Estimate.s: Estimate.cpp.s
+
+.PHONY : Estimate.s
+
+# target to generate assembly for a file
+Estimate.cpp.s:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/Estimate.cpp.s
+.PHONY : Estimate.cpp.s
+
 Floyd.o: Floyd.cpp.o
 
 .PHONY : Floyd.o
@@ -204,6 +231,33 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+output_test.o: output_test.cpp.o
+
+.PHONY : output_test.o
+
+# target to build an object file
+output_test.cpp.o:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/output_test.cpp.o
+.PHONY : output_test.cpp.o
+
+output_test.i: output_test.cpp.i
+
+.PHONY : output_test.i
+
+# target to preprocess a source file
+output_test.cpp.i:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/output_test.cpp.i
+.PHONY : output_test.cpp.i
+
+output_test.s: output_test.cpp.s
+
+.PHONY : output_test.s
+
+# target to generate assembly for a file
+output_test.cpp.s:
+	$(MAKE) -f CMakeFiles/Huawei.dir/build.make CMakeFiles/Huawei.dir/output_test.cpp.s
+.PHONY : output_test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -213,6 +267,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... Huawei"
 	@echo "... edit_cache"
+	@echo "... Estimate.o"
+	@echo "... Estimate.i"
+	@echo "... Estimate.s"
 	@echo "... Floyd.o"
 	@echo "... Floyd.i"
 	@echo "... Floyd.s"
@@ -222,6 +279,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... output_test.o"
+	@echo "... output_test.i"
+	@echo "... output_test.s"
 .PHONY : help
 
 

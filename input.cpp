@@ -95,6 +95,7 @@ vector<Road> Road_input(string path){
     {
         examplefile.getline(buffer,100);
         if (buffer[0] == '#') continue;
+        else if (buffer[0] != '(') break;
         int flag=0;
         string id={},length={},speed={},channel={},from={},to={},isDuplex={};
         for (char ch:buffer){
@@ -145,6 +146,7 @@ vector<Car> Car_input(string path){
     {
         examplefile.getline(buffer,100);
         if (buffer[0] == '#') continue;
+        else if (buffer[0] != '(') break;
         int flag=0;
         string id={},from={},to={},speed_max={},planTime={};
         for (char ch:buffer){
@@ -189,6 +191,7 @@ vector<Cross> Cross_input(string path){
     {
         examplefile.getline(buffer,100);
         if (buffer[0] == '#') continue;
+        else if (buffer[0] != '(') break;
         int flag=0;
         string id={},up={},right={},down={},left={};
         for (char ch:buffer){
@@ -239,8 +242,9 @@ vector<Car_answer> Car_answer_input(string path){
     }
     while (!examplefile.eof())
     {
-        examplefile.getline(buffer,100);
+        examplefile.getline(buffer,1000);
         if (buffer[0] == '#') continue;
+        else if (buffer[0] != '(') break;
         int flag=0;
         string id={},planTime={},road={};
         road_id.clear();
@@ -266,6 +270,8 @@ vector<Car_answer> Car_answer_input(string path){
         }
         const char* p1 = id.data();//加const  或者用char * p=(char*)str.data();的形式
         const char* p2 = planTime.data();//加const  或者用char * p=(char*)str.data();的形式
+        const char* p3 = road.data();
+        road_id.push_back(atoi(p3));
         temp.Car_answer_init(atoi(p1),atoi(p2),road_id);
         Car_answers.push_back(temp);
     }
